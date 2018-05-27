@@ -1,0 +1,7 @@
+# Mac specific
+
+.DS_Store
+
+# General
+
+._*

@@ -1,0 +1,45 @@
+\documentclass{article}
+\usepackage[paperheight=74mm,paperwidth=52mm,margin=0mm,bottom=1.5mm]{geometry}
+
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+
+\usepackage{float}
+
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage[table]{xcolor}
+\usepackage{ragged2e}
+
+\begin{document}
+
+    \setlength\parindent{0pt}
+    {% for item in items %}
+    \begin{tabularx}{\textwidth}{ m{7.5mm}  | X }
+        \multicolumn{2}{@{}p{\dimexpr \paperwidth-\tabcolsep}@{}}{\colorbox{black}{\parbox{\linewidth}{\color{white}
+         \centering {{item.name}}}}}\\
+        \multicolumn{2}{c}{
+        \footnotesize
+        {{ item.item_type }}{% if item.attack_bonus %} {{ item.attack_bonus }}{% endif %}{% if item.item_type and item.rarity %}, {% endif %}{{ item.rarity }}}\\\hline
+        {% if item.armor_class      %} \footnotesize AC  & \footnotesize {{ item.armor_class      }} \\\hline{% endif %}
+        {% if item.difficulty_class %} \footnotesize DC  & \footnotesize {{ item.difficulty_class }} \\\hline{% endif %}
+        {% if item.advantages       %} \footnotesize ADV & \footnotesize {{ item.advantages       }} \\\hline{% endif %}
+    \end{tabularx}
+    \vfill
+    \hspace{.05\textwidth}\parbox{.9\textwidth}{
+    \footnotesize
+    {{ item.description }}
+    }
+    \vfill
+
+    \colorbox{black}{\parbox{\textwidth}{\color{white}
+    \centering 
+    {{ item.time }} {% if not item.time %}\color{black}placeholder{% endif %}
+    }}
+    \newpage
+    {% endfor %}
+
+    
+\end{document}
