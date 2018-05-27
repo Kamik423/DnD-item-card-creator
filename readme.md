@@ -62,3 +62,8 @@ A `Python` script reads the `YAML` and decodes it, fills in a `jinja2` template 
 Without further adjustment this probably only works on `UNIX` systems. So no Windows for now `¯\_(ツ)_/¯`.
 
 You will need to have `LaTeX` installed and also `Python 3.6` (or later) with the packages `jinja2` and `pyyaml` installed. Just use PIP for that...
+
+## License
+
+The project is licensed under the [MIT-License](license.md). 
+Feel free to expand it any way you please!
