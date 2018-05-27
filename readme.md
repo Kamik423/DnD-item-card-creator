@@ -39,7 +39,7 @@ Toothpick of great Power:
                         \textbf{I am the DM. I can do what I want!}
 ```
 
-It is easily executed via the python script in `BASH`.
+It is easily executed via the `Python` script in `BASH`.
 
 ```bash
 ./parser.py example/example_items.yaml example/example_items.pdf
@@ -50,6 +50,12 @@ The two arguments are the input `YAML` file and the location of the output `PDF`
 The `Toothpick of great Power` illustrates all the currently available options. Most of those can be left out. The order is not important. If you want any other options added, just open an issue.
 
 You can always have a look at the sourcecode. It should be pretty robust and I did my best documenting everything and keep it understandable.
+
+As demonstrated in the `Toothpick of great Power` normal `LaTeX` commands should work here, since it is being built as `LaTeX`
+
+## How it works
+
+A `Python` script reads the `YAML` and decodes it, fills in a `jinja2` template of a `LaTeX` file and uses `pdflatex` to build it in a temporary directory, moves out the `PDF` and deletes the temporary directory.
 
 ## Requirements
 
