@@ -144,8 +144,11 @@ def generate_source(items: List[Item]):
 def build_latex():
     """Builds the LaTeX from source
     """
-    proc = subprocess.Popen(['pdflatex {}'.format(
-        LATEX_TEMPORARY_TXT)], cwd=LATEX_TEMPORARY_DIR, shell=True, stdout=subprocess.PIPE)
+    proc = subprocess.Popen(
+        ['pdflatex {}'.format(LATEX_TEMPORARY_TXT)],
+        cwd=LATEX_TEMPORARY_DIR,
+        shell=True,
+        stdout=subprocess.PIPE)
     (_, _) = proc.communicate()
 
 
