@@ -34,7 +34,7 @@ import argparse
 import os
 import subprocess
 
-from shutil import move, rmtree
+from shutil import copy, move, rmtree
 from typing import Dict, List
 
 from jinja2 import Template
@@ -44,6 +44,24 @@ import yaml
 LATEX_TEMPLATE_NAME = os.path.join(os.path.dirname(__file__), 'template.tex')
 LATEX_TEMPORARY_DIR = os.path.expanduser('~/latextmp')
 LATEX_TEMPORARY_TXT = 'tmp.tex'
+
+
+class YAMLKeys:
+    """Constant keys in the yaml file.
+    """
+
+    # pylint: disable=too-few-public-methods
+    #
+    # The point of this class is to store data
+    # I'd use a struct if Python had any
+
+    bonus = 'bonus'
+    item_type = 'type'
+    time = 'time'
+    rarity = 'rarity'
+    description = 'description'
+
+    all_keys: List[str] = [bonus, item_type, time, rarity, description]
 
 
 class Item:
@@ -56,16 +74,17 @@ class Item:
     # The point of this class is to store data
     # I'd use a struct if Python had any
 
-    armor_class: str = ''
-    attack_bonus: str = ''
-    difficulty_class: str = ''
-    advantages: str = ''
+    bonus: str = ''
     item_type: str = ''
-
     time: str = ''
     name: str = ''
     rarity: str = ''
     description: str = ''
+
+    options: Dict[str, any] = {}
+
+    def __init__(self):
+        self.options = {}
 
 
 def load(input_file_name: str) -> List[Dict[str, str]]:
@@ -98,25 +117,21 @@ def generate_item_objects(dictionary: List[Dict[str, str]]) -> List[Item]:
         item = dictionary[item_title]
         new_item = Item()
         new_item.name = item_title
-        if 'attack bonus' in item:
-            attack_bonus = item['attack bonus']
-            if isinstance(attack_bonus, int) and attack_bonus >= 0:
-                attack_bonus = '+{}'.format(attack_bonus)
-            new_item.attack_bonus = attack_bonus
-        if 'rarity' in item:
-            new_item.rarity = item['rarity']
-        if 'type' in item:
-            new_item.item_type = item['type']
-        if 'AC' in item:
-            new_item.armor_class = item['AC']
-        if 'DC' in item:
-            new_item.difficulty_class = item['DC'].replace('/', '\\newline')
-        if 'advantages' in item:
-            new_item.advantages = item['advantages']
-        if 'description' in item:
-            new_item.description = item['description'].replace('\n', '\n\n')
-        if 'time' in item:
-            new_item.time = item['time']
+        if YAMLKeys.bonus in item:
+            new_item.bonus = item[YAMLKeys.bonus]
+        if YAMLKeys.rarity in item:
+            new_item.rarity = item[YAMLKeys.rarity]
+        if YAMLKeys.item_type in item:
+            new_item.item_type = item[YAMLKeys.item_type]
+        if YAMLKeys.time in item:
+            new_item.time = item[YAMLKeys.time]
+        if YAMLKeys.description in item:
+            new_item.description = item[YAMLKeys.description].replace(
+                '\n',
+                '\n\n')
+        for key in item:
+            if key not in YAMLKeys.all_keys:
+                new_item.options[key] = item[key]
         return_list.append(new_item)
     return return_list
 
@@ -166,6 +181,20 @@ def move_pdf(destination: str):
         )
 
 
+def copy_tex(pdf_destination: str):
+    """Copys the .tex file next to the PDF. Use for debugging
+
+    Args:
+        pdf_destination (str): the destination of the PDF
+    """
+    tex_destination = pdf_destination.rstrip('.pdf') + '.tex'
+    copy('{}/{}'.format(
+        LATEX_TEMPORARY_DIR,
+        LATEX_TEMPORARY_TXT),
+         tex_destination
+        )
+
+
 def cleanup():
     """Deletes the LaTeX temporary directory
     """
@@ -179,13 +208,20 @@ def main():
     parser = argparse.ArgumentParser(description='Parse items list')
     parser.add_argument('input', help='The input file to be parse')
     parser.add_argument('output', help='The output file')
+    parser.add_argument('-x', '--tex', help='Copy .tex file to destination',
+                        action='store_true')
     args = parser.parse_args()
-    file_input = args.input
-    file_output = args.output
+
+    file_input: str = args.input
+    file_output: str = args.output
+    do_copy_tex: bool = args.tex
+
     items_dict = load(file_input)
     cleanup()
     items = generate_item_objects(items_dict)
     generate_source(items)
+    if do_copy_tex:
+        copy_tex(file_output)
     build_latex()
     move_pdf(file_output)
     cleanup()

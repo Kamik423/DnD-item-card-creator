@@ -17,15 +17,16 @@
 
     \setlength\parindent{0pt}
     {% for item in items %}
-    \begin{tabularx}{\textwidth}{ m{7.5mm}  | X }
-        \multicolumn{2}{@{}p{\dimexpr \paperwidth-\tabcolsep}@{}}{\colorbox{black}{\parbox{\linewidth}{\color{white}
-         \centering {{item.name}}}}}\\
-        \multicolumn{2}{c}{
-        \footnotesize
-        {{ item.item_type }}{% if item.attack_bonus %} {{ item.attack_bonus }}{% endif %}{% if item.item_type and item.rarity %}, {% endif %}{{ item.rarity }}}\\\hline
-        {% if item.armor_class      %} \footnotesize AC  & \footnotesize {{ item.armor_class      }} \\\hline{% endif %}
-        {% if item.difficulty_class %} \footnotesize DC  & \footnotesize {{ item.difficulty_class }} \\\hline{% endif %}
-        {% if item.advantages       %} \footnotesize ADV & \footnotesize {{ item.advantages       }} \\\hline{% endif %}
+    \colorbox{black}{\parbox{\textwidth}{\color{white} \centering 
+        {{ item.name }}
+    }}
+    \begin{tabularx}{\textwidth}{ >{\centering\arraybackslash}X }
+        {{ item.item_type }}{% if item.bonus %} {{ item.bonus }}{% endif %}{% if item.item_type and item.rarity %}, {% endif %}{{ item.rarity }}\\\hline
+    \end{tabularx}\\[-0.4mm]
+    \begin{tabularx}{\textwidth}{ m{7.5mm} | X }
+        {% for option_name in item.options %} 
+        \footnotesize {{ option_name }}  & \footnotesize {{ item.options[option_name] }} \\\hline
+        {% endfor %}
     \end{tabularx}
     \vfill
     \hspace{.05\textwidth}\parbox{.9\textwidth}{
