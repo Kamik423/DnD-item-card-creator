@@ -16,6 +16,7 @@ Toothpick of great Power:
   bonus:                "+5"
   rarity:               vary rare
   type:                 Dagger
+  AC:                   "+42"
   DC:                   Animal handling 15\newline Arcana 3
   ADV:                  Wisdom SS
   time:                 Once per day
